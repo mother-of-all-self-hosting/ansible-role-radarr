@@ -28,11 +28,11 @@ ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
 			--log-driver=none \
 			--user={{ radarr_uid }}:{{ radarr_gid }} \
 			--cap-drop=ALL \
-			--cap-add=SETUID \
-			--cap-add=SETGID \
 			--cap-add=CHOWN \
-			--cap-add=FOWNER \
 			--cap-add=DAC_OVERRIDE \
+			--cap-add=FOWNER \
+			--cap-add=SETGID \
+			--cap-add=SETUID \
 			--read-only \
 			--network={{ radarr_container_network }} \
 			{% if radarr_container_http_bind_port %}
