@@ -7,8 +7,12 @@
   "packageRules": [
     {
       "description": "linuxserver/radarr publishes 15647 tags, of which only the 100 bare `<major>.<minor>.<patch>` ones are release tags; the rest are `nightly-`/`develop-`/`version-`/`amd64-`/`arm32v7-`/`arm64v8-` flavours, four-component `<version>-ls<rebuild>` builds and a stray `5.14`. Measured through Renovate, the `versioning=semver` on the annotation already produces exactly the same single candidate as this rule does, so this is belt-and-braces: it keeps the flavours out even if that annotation is ever changed to `docker` or `loose` versioning, both of which would accept `5.14` as a newer minor than a 5.13.x pin.",
-      "matchDatasources": ["docker"],
-      "matchPackageNames": ["lscr.io/linuxserver/radarr"],
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchPackageNames": [
+        "ghcr.io/linuxserver/radarr"
+      ],
       "allowedVersions": "/^\\d+\\.\\d+\\.\\d+$/"
     }
   ]

@@ -58,7 +58,7 @@ scenario() {
 
 	cat > defaults/main.yml <<-'YAML'
 		# radarr_version: 9.9.9
-		# renovate: datasource=docker depName=lscr.io/linuxserver/radarr versioning=semver
+		# renovate: datasource=docker depName=ghcr.io/linuxserver/radarr versioning=semver
 		radarr_version: 6.3.0
 		radarr_container_image: "{{ radarr_container_image_registry_prefix }}linuxserver/radarr:{{ radarr_container_image_tag }}"
 		radarr_container_image_tag: "{{ radarr_version }}"
