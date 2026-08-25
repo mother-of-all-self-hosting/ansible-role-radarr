@@ -59,3 +59,12 @@ just prek-install-git-pre-commit-hook
 This role supports [Molecule](https://docs.ansible.com/projects/molecule/), an Ansible testing framework designed for developing and testing Ansible collections, playbooks, and roles.
 
 Refer to [this page](./molecule/README.md) for details about how to utilize it.
+
+### Releases
+
+Release tags are cut automatically. On every push to `develop` and to `main`, [`.github/workflows/autotag.yml`](./.github/workflows/autotag.yml) runs [`bin/compute-next-tag.sh`](./bin/compute-next-tag.sh), which derives the tag from `radarr_version` in [`defaults/main.yml`](./defaults/main.yml) and the tags that already exist:
+
+- a Radarr version that has never been released starts a new counter (`v6.4.2-0`)
+- otherwise the counter is incremented (`v6.3.0-1`), but only if something under `defaults/`, `meta/`, `tasks/` or `templates/` changed since the previous release — a README or CI-only change releases nothing
+
+Because the tag is derived from the repository's state rather than from commit messages, it does not matter in which order pull requests are merged, and no human has to tag anything. [`bin/test-compute-next-tag.sh`](./bin/test-compute-next-tag.sh) exercises the computation against throwaway repositories and runs as a prek hook whenever the script or `defaults/main.yml` changes.
