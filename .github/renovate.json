@@ -1,6 +1,15 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Version bumps of Radarr stay human-reviewed pull requests: a patch bump of this tag is a Radarr patch release, and Radarr applies forward-only SQLite migrations on startup whose `Down()` throws, which a fresh-install Molecule run structurally cannot see. What Molecule does gate is that the image the role pins boots, listens where the role told it to, and reports the pinned version back through its own API.",
   "extends": [
     "github>mother-of-all-self-hosting/renovate-config#v1.0.0"
+  ],
+  "packageRules": [
+    {
+      "description": "linuxserver/radarr publishes 15647 tags, of which only the 100 bare `<major>.<minor>.<patch>` ones are release tags; the rest are `nightly-`/`develop-`/`version-`/`amd64-`/`arm32v7-`/`arm64v8-` flavours, four-component `<version>-ls<rebuild>` builds and a stray `5.14`. Measured through Renovate, the `versioning=semver` on the annotation already produces exactly the same single candidate as this rule does, so this is belt-and-braces: it keeps the flavours out even if that annotation is ever changed to `docker` or `loose` versioning, both of which would accept `5.14` as a newer minor than a 5.13.x pin.",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["lscr.io/linuxserver/radarr"],
+      "allowedVersions": "/^\\d+\\.\\d+\\.\\d+$/"
+    }
   ]
 }
