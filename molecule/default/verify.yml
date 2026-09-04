@@ -295,20 +295,15 @@
     # label carries the rebuild counter on top (`6.3.0.10514-ls314`), so the pin
     # is compared as a prefix - with the trailing dot, or `6.3.0` would also
     # accept a `6.3.01` that does not exist yet but could.
-    - name: Assert the running Radarr is the version the role pins
+    - name: Assert the running Radarr is the version this role installs
       ansible.builtin.assert:
         that:
           - radarr_status.json.version is string
           - radarr_status.json.version.startswith(radarr_verify_pinned_version ~ '.')
           - radarr_status.json.packageVersion.startswith(radarr_verify_pinned_version ~ '.')
           - radarr_verify_image_label.startswith(radarr_verify_pinned_version ~ '.')
-        fail_msg: >-
-          The running Radarr reports {{ radarr_status.json.version | default('none') }} and the image
-          is labelled {{ radarr_verify_image_label }}, while defaults/main.yml pins
-          {{ radarr_verify_pinned_version }}
-        success_msg: >-
-          The running Radarr reports {{ radarr_status.json.version }}
-          ({{ radarr_status.json.packageVersion }}), the version defaults/main.yml pins
+        fail_msg: "Radarr reports {{ radarr_status.json.version | default('none') }}, expected {{ radarr_defaults.radarr_version }}"
+        success_msg: "Radarr reports {{ radarr_status.json.version }}"
       vars:
         radarr_verify_pinned_version: "{{ radarr_defaults.radarr_version | string }}"
         radarr_verify_image_label: "{{ radarr_container.Config.Labels['org.opencontainers.image.version'] }}"
