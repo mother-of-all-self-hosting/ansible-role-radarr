@@ -483,7 +483,7 @@
       ansible.builtin.debug:
         msg:
           - "Radarr systemd: {{ radarr_service.status.ActiveState }}"
-          - "Radarr version: {{ radarr_status.json.version }} ({{ radarr_status.json.packageVersion }}), pinned: {{ radarr_defaults.radarr_version }}"
+          - "Radarr version: {{ radarr_status.json.version }}"
           - "Radarr listening on: {{ radarr_listening_ports | join(', ') }} (configured: {{ radarr_container_http_port }})"
           - "Radarr instance name: {{ radarr_status.json.instanceName }}"
           - "Radarr database: {{ radarr_status.json.databaseType }} at migration {{ radarr_status.json.migrationVersion }}, under {{ radarr_verify_data_path }}"
