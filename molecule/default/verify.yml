@@ -303,7 +303,7 @@
           - radarr_status.json.packageVersion.startswith(radarr_verify_pinned_version ~ '.')
           - radarr_verify_image_label.startswith(radarr_verify_pinned_version ~ '.')
         fail_msg: >-
-          The running Radarr reports {{ radarr_status.json.version | default('nothing') }} and the image
+          The running Radarr reports {{ radarr_status.json.version | default('none') }} and the image
           is labelled {{ radarr_verify_image_label }}, while defaults/main.yml pins
           {{ radarr_verify_pinned_version }}
         success_msg: >-
@@ -329,7 +329,7 @@
           - radarr_status.json.migrationVersion | int > 0
           - radarr_status.json.appData == '/config'
         fail_msg: >-
-          Radarr calls itself {{ radarr_status.json.instanceName | default('nothing') }} rather than
+          Radarr calls itself {{ radarr_status.json.instanceName | default('none') }} rather than
           {{ radarr_molecule_instance_name }}, so radarr_environment_variables_additional_variables
           does not reach the process
         success_msg: >-
@@ -439,7 +439,7 @@
           - radarr_control_json.apiKey != radarr_molecule_api_key
           - radarr_control_json.instanceName == 'Radarr'
         fail_msg: >-
-          The stock Radarr image produced {{ radarr_control_initialize.stdout | default('nothing') }},
+          The stock Radarr image produced {{ radarr_control_initialize.stdout | default('none') }},
           which makes the assertions above unattributable to the role
         success_msg: >-
           The stock Radarr image answers 200 on any path, serves its own random API key
