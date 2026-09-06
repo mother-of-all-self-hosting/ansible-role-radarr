@@ -48,13 +48,13 @@
         file: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/defaults/main.yml"
         name: radarr_defaults
 
-    - name: Read the Radarr container the role created
+    - name: Inspect Radarr container
       ansible.builtin.command:
         cmd: "docker container inspect {{ radarr_verify_identifier }}"
       register: radarr_container_raw
       changed_when: false
 
-    - name: Make sense of the Radarr container
+    - name: Parse the Radarr container definition
       ansible.builtin.set_fact:
         radarr_container: "{{ (radarr_container_raw.stdout | from_json)[0] }}"
 
