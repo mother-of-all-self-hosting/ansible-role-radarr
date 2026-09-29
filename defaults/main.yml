@@ -114,6 +114,9 @@ radarr_container_labels_additional_labels: "{{ radarr_container_labels_additiona
 radarr_container_labels_additional_labels_auto: []
 radarr_container_labels_additional_labels_custom: []
 
+# Specify the size of the container's tmpfs volume (/run)
+radarr_container_tmpfs_run_size: 128m
+
 # A list of extra arguments to pass to the container (`docker create` command)
 radarr_container_extra_arguments: "{{ radarr_container_extra_arguments_auto + radarr_container_extra_arguments_custom }}"
 radarr_container_extra_arguments_auto: []
