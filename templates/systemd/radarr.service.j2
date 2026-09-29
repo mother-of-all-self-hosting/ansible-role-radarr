@@ -23,36 +23,36 @@ Environment="HOME={{ devture_systemd_docker_base_systemd_unit_home_path }}"
 ExecStartPre={{ devture_systemd_docker_base_host_command_sh }} -c '{{ radarr_container_cleanup_command | trim | replace("\n", " ") }}'
 
 ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
-			--rm \
-			--name={{ radarr_identifier }} \
-			--log-driver=none \
-			--user={{ radarr_uid }}:{{ radarr_gid }} \
-			--cap-drop=ALL \
-			--cap-add=CHOWN \
-			--cap-add=DAC_OVERRIDE \
-			--cap-add=FOWNER \
-			--cap-add=SETGID \
-			--cap-add=SETUID \
-			--read-only \
-			--network={{ radarr_container_network }} \
-			{% if radarr_container_http_host_bind_port %}
-			-p {{ radarr_container_http_host_bind_port }}:{{ radarr_container_http_port }} \
-			{% endif %}
-			--env-file={{ radarr_base_path }}/env \
-			--label-file={{ radarr_base_path }}/labels \
-			--mount type=bind,src={{ radarr_data_path }},dst=/config \
-			{% for volume in radarr_container_additional_volumes %}
-			--mount type={{ volume.type | default('bind' if '/' in volume.src else 'volume') }},src={{ volume.src }},dst={{ volume.dst }}{{ (',' + volume.options) if volume.options | default('') else '' }} \
-			{% endfor %}
-			# https://docs.linuxserver.io/misc/read-only/#how
-			--tmpfs=/run:rw,exec,nosuid,size=128m \
-			{% for arg in radarr_container_extra_arguments %}
-			{{ arg }} \
-			{% endfor %}
-			{{ radarr_container_image }} \
-			{% for arg in radarr_process_extra_arguments %}
-			{{ arg }} \
-			{% endfor %}
+      --rm \
+      --name={{ radarr_identifier }} \
+      --log-driver=none \
+      --user={{ radarr_uid }}:{{ radarr_gid }} \
+      --cap-drop=ALL \
+      --cap-add=CHOWN \
+      --cap-add=DAC_OVERRIDE \
+      --cap-add=FOWNER \
+      --cap-add=SETGID \
+      --cap-add=SETUID \
+      --read-only \
+      --network={{ radarr_container_network }} \
+      {% if radarr_container_http_host_bind_port %}
+      -p {{ radarr_container_http_host_bind_port }}:{{ radarr_container_http_port }} \
+      {% endif %}
+      --env-file={{ radarr_base_path }}/env \
+      --label-file={{ radarr_base_path }}/labels \
+      --mount type=bind,src={{ radarr_data_path }},dst=/config \
+      {% for volume in radarr_container_additional_volumes %}
+      --mount type={{ volume.type | default('bind' if '/' in volume.src else 'volume') }},src={{ volume.src }},dst={{ volume.dst }}{{ (',' + volume.options) if volume.options | default('') else '' }} \
+      {% endfor %}
+      # https://docs.linuxserver.io/misc/read-only/#how
+      --tmpfs=/run:rw,exec,nosuid,size=128m \
+      {% for arg in radarr_container_extra_arguments %}
+      {{ arg }} \
+      {% endfor %}
+      {{ radarr_container_image }} \
+      {% for arg in radarr_process_extra_arguments %}
+      {{ arg }} \
+      {% endfor %}
 
 {% for network in radarr_container_additional_networks %}
 ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} network connect {{ network }} {{ radarr_identifier }}
