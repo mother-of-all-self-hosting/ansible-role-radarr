@@ -17,8 +17,9 @@
     radarr_verify_base_path: /radarr
     radarr_verify_data_path: /radarr/data
 
-    radarr_verify_url: "http://127.0.0.1:17878"
-    radarr_verify_api_url: "http://127.0.0.1:17878/api/v3"
+    # Radarr serves itself under the configured path prefix.
+    radarr_verify_url: "http://127.0.0.1:17878/radarr-ui"
+    radarr_verify_api_url: "http://127.0.0.1:17878/radarr-ui/api/v3"
     radarr_verify_headers:
       X-Api-Key: "{{ radarr_molecule_api_key }}"
 
@@ -297,10 +298,34 @@
             that:
               - radarr_container.Config.Labels['traefik.enable'] == 'true'
               - radarr_container.Config.Labels['traefik.http.routers.radarr.rule'] == 'Host(`' ~ radarr_expected_hostname ~ '`) && PathPrefix(`' ~ radarr_expected_path_prefix ~ '`)'
-              - radarr_container.Config.Labels['traefik.http.middlewares.radarr-strip-prefix.stripprefix.prefixes'] == radarr_expected_path_prefix
+              - "'traefik.http.middlewares.radarr-strip-prefix.stripprefix.prefixes' not in radarr_container.Config.Labels"
               - radarr_container.Config.Labels['traefik.http.services.radarr.loadbalancer.server.port'] == '17878'
             fail_msg: "The Traefik labels are not what templates/labels.j2 should have produced: {{ radarr_container.Config.Labels }}"
             success_msg: "The Traefik labels route {{ radarr_expected_hostname }}{{ radarr_expected_path_prefix }} to port 17878"
+
+        # Radarr's web UI builds every asset and API URL from these, so they must
+        # carry the prefix Traefik routes on.
+        - name: Read the URL base Radarr hands to its web UI
+          ansible.builtin.uri:
+            url: "{{ radarr_verify_url }}/initialize.json"
+            method: GET
+            return_content: true
+            follow_redirects: none
+          register: radarr_initialize
+          changed_when: false
+
+        - name: Assert that Radarr serves itself under the configured path prefix
+          ansible.builtin.assert:
+            that:
+              - radarr_initialize_json.urlBase == radarr_expected_path_prefix
+              - radarr_initialize_json.apiRoot == radarr_expected_path_prefix ~ '/api/v3'
+            fail_msg: >-
+              Radarr hands its web UI the URL base {{ radarr_initialize_json.urlBase | default('none') }}
+              and the API root {{ radarr_initialize_json.apiRoot | default('none') }},
+              not ones under {{ radarr_expected_path_prefix }}
+            success_msg: "Radarr serves its web UI and API under {{ radarr_expected_path_prefix }}"
+          vars:
+            radarr_initialize_json: "{{ radarr_initialize.content | from_json }}"
 
         # ------------------------------------------------------------------
         # What the process inside the container actually sees

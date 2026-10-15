@@ -19,10 +19,10 @@ traefik.http.middlewares.{{ radarr_identifier }}-slashless-redirect.redirectrege
 {% set middlewares = middlewares + [radarr_identifier + '-slashless-redirect'] %}
 {% endif %}
 
-{% if radarr_container_labels_traefik_path_prefix != '/' %}
-traefik.http.middlewares.{{ radarr_identifier }}-strip-prefix.stripprefix.prefixes={{ radarr_container_labels_traefik_path_prefix }}
-{% set middlewares = middlewares + [radarr_identifier + '-strip-prefix'] %}
-{% endif %}
+{#
+  Intentionally not adding a stripPrefix middleware.
+  Radarr serves itself under the prefix via RADARR__SERVER__URLBASE (see `env.j2`).
+#}
 
 {% if radarr_container_labels_traefik_additional_request_headers.keys() | length > 0 %}
 {% for name, value in radarr_container_labels_traefik_additional_request_headers.items() %}

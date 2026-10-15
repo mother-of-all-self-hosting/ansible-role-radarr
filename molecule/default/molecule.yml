@@ -72,8 +72,8 @@ provisioner:
 
         radarr_hostname: radarr.molecule.local
 
-        # A non-root path prefix exercises the strip-prefix and slashless
-        # redirect middlewares in templates/labels.j2.
+        # A non-root path prefix exercises the URL base (templates/env.j2) and
+        # the slashless redirect (templates/labels.j2).
         radarr_path_prefix: /radarr-ui
 
         # Bound to the loopback interface of the test container only. Nothing
