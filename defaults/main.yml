@@ -81,6 +81,9 @@ radarr_container_labels_traefik_priority: 0
 radarr_container_labels_traefik_entrypoints: web-secure
 radarr_container_labels_traefik_tls: "{{ radarr_container_labels_traefik_entrypoints != 'web' }}"
 radarr_container_labels_traefik_tls_certResolver: default # noqa var-naming
+radarr_container_labels_traefik_middleware_basic_auth_enabled: false
+# See: https://doc.traefik.io/traefik/reference/routing-configuration/http/middlewares/basicauth/
+radarr_container_labels_traefik_middleware_basic_auth_users: ""
 
 # Controls which additional headers to attach to all HTTP requests.
 # To add your own custom request headers, use `radarr_container_labels_traefik_additional_request_headers_custom`

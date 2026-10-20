@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023 Slavi Pantaleev
+# SPDX-FileCopyrightText: 2023-2025 Slavi Pantaleev
 # SPDX-FileCopyrightText: 2025 spatterIight
 # SPDX-FileCopyrightText: 2025, 2026 Suguru Hirahara
 #
@@ -34,7 +34,7 @@
       This Radarr role also does not support self-building yet, so it's not possible to make use of it.
   when: "radarr_arch not in ['amd64', 'arm64']"
 
-- name: Validate Radarr Traefik configuration
+- name: Run if Traefik is enabled
   when: radarr_container_labels_traefik_enabled | bool
   block:
     - name: (Deprecation) Catch and report Radarr labels for Traefik in the old string format
@@ -44,14 +44,15 @@
           Replace `radarr_container_labels_additional_labels: |` with `radarr_container_labels_additional_labels_custom:` and make each label a list item.
       when: "radarr_container_labels_additional_labels | default([]) is string"
 
-    - name: Fail if required Radarr Traefik settings not defined
+    - name: Fail if Traefik settings required for Radarr are not defined
       ansible.builtin.fail:
         msg: >-
-          You need to define a required configuration setting (`{{ item }}`).
-      when: "lookup('vars', item, default='') | string | length == 0"
+          You need to define a required configuration setting (`{{ item.name }}`).
+      when: "item.when | bool and lookup('vars', item.name, default='') | string | length == 0"
       with_items:
-        - radarr_container_labels_traefik_hostname
-        - radarr_container_labels_traefik_path_prefix
+        - { "name": "radarr_container_labels_traefik_hostname", when: true }
+        - { "name": "radarr_container_labels_traefik_path_prefix", when: true }
+        - { "name": "radarr_container_labels_traefik_middleware_basic_auth_users", when: "{{ radarr_container_labels_traefik_middleware_basic_auth_enabled }}" }
 
     # We ensure it doesn't end with a slash, because we handle both (slash and no-slash).
     # Knowing that `radarr_container_labels_traefik_path_prefix` does not end with a slash
