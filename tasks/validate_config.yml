@@ -25,7 +25,6 @@
   with_items:
     - radarr_uid
     - radarr_gid
-    - radarr_hostname
 
 - name: Fail if Radarr architecture is not supported
   ansible.builtin.fail:
